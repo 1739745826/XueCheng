@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xuecheng.manage_course.dao.CategoryMapper">
+    <resultMap id="categoryMap" type="com.xuecheng.framework.domain.course.ext.CategoryNode">
+        <id column="aid" property="id"/>
+        <result column="aname" property="name"/>
+        <result column="alabel" property="label"/>
+        <collection property="children" ofType="com.xuecheng.framework.domain.course.ext.CategoryNode">
+            <id column="bid" property="id"/>
+            <result column="bname" property="name"/>
+            <result column="blabel" property="label"/>
+            <collection property="children" ofType="com.xuecheng.framework.domain.course.ext.CategoryNode">
+                <id column="cid" property="id"/>
+                <result column="cname" property="name"/>
+                <result column="clabel" property="label"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <select id="findList" resultMap="categoryMap">
+        SELECT a.id    aid,
+               a.name  aname,
+               a.label alabel,
+               b.id    bid,
+               b.name  bname,
+               b.label blabel,
+               c.id    cid,
+               c.name  cname,
+               c.label clable
+        FROM `category` a
+                 LEFT JOIN `category` b ON b.`parentid` = a.id
+                 LEFT JOIN `category` c ON c.`parentid` = b.id
+        where a.parentid = '0'
+    </select>
+</mapper>
